@@ -11,6 +11,25 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+
+    <style>
+        .Usermessage {
+            background-color: #2BD9FE;  /* your color */
+            border: 1px solid #123456;  /* your color */
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .AIMessage {
+            background-color: #52AA8A;  /* your color */
+            border: 1px solid #123456;  /* your color */
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .Usermessage p, .AIMessage p {
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,14 +45,62 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col">
-                <h2>Character to act as</h2>>
+                <h2>Character to act as</h2>
                 <input type="text" class="form-control" placeholder="Example: A homoerotic firefighter">
             </div>
             <div class="col">
-                <h1>This is a test</h1>>
+                <h1>Messages</h1>
+                <div id ="inputDiv" class="Usermessage">
+                    <strong>User: </strong>
+                    <div class="input-group">
+                        <input id="userMessage" type="text" class="form-control" placeholder="Message">
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="button" onclick="submitMessage()">Submit</button>
+                        </div>
+                    </div>
+                </div>
+                <div class ="AIMessage">
+                    <strong>Chatbot: </strong><p>Oh hello!</p>
+                </div>
             </div>
         </div>
     </div>
 </body>
 
+<script>
+    function submitMessage(){
+        const { Configuration, OpenAIApi } = require("openai");
+        require('dotenv').config();
+        const configuration = new Configuration({
+             apiKey: process.env.OPENAI_API_KEY,
+        });
+        const openai = new OpenAIApi(configuration);
+        var userInput = document.getElementById("userMessage").value;
+        var newDiv = "<div class =\"Usermessage\"><strong>User: </strong> <p>" + userInput + "</p></div>"
+        $("#inputDiv").replaceWith(newDiv);
+
+        // Select Usermessage and AIMessage divs
+        const userMessageDivs = document.querySelectorAll('.Usermessage');
+        const aiMessageDivs = document.querySelectorAll('.AIMessage');
+
+        // Arrays to store the contents
+        const userMessages = [];
+        const aiMessages = [];
+
+        // Iterate over Usermessage divs and extract contents
+        userMessageDivs.forEach((div) => {
+            const message = div.textContent.trim();
+            userMessages.push(message);
+        });
+
+        // Iterate over AIMessage divs and extract contents
+        aiMessageDivs.forEach((div) => {
+            const message = div.textContent.trim();
+            aiMessages.push(message);
+        });
+        // Output the arrays
+        console.log('User Messages:', userMessages);
+        console.log('AI Messages:', aiMessages);
+    }
+</script>
 </html>
